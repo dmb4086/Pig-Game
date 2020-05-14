@@ -9,10 +9,19 @@ After that, it's the next player's turn
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
-var scores, roundScore, activePlayer;
+var scores, roundScore, activePlayer, dice;
+// hiding the dice when the game beigns
+document.querySelector(".dice").style.display = "none";
+
 
 scores = [0,0];
 roundScore = 0;
 activePlayer = 0;
 
-dice
+dice = Math.floor(Math.random()*6 +1); //setting the dice to produce a random number
+
+//displaying the dice value in current player box and italicizing it
+document.querySelector("#current-" + activePlayer).innerHTML  = "<em>"+ dice + "</em>";
+
+
+
