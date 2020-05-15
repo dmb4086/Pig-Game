@@ -9,19 +9,74 @@ After that, it's the next player's turn
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
-var scores, roundScore, activePlayer, dice;
+var scores, roundScore, activePlayer;
 // hiding the dice when the game beigns
 document.querySelector(".dice").style.display = "none";
 
-
-scores = [0,0];
+scores = [0, 0];
 roundScore = 0;
 activePlayer = 0;
 
-dice = Math.floor(Math.random()*6 +1); //setting the dice to produce a random number
+document.getElementById("score-1").textContent = 0;
+document.getElementById("score-0").textContent = 0;
+document.getElementById("current-0").textContent = 0;
 
 //displaying the dice value in current player box and italicizing it
-document.querySelector("#current-" + activePlayer).innerHTML  = "<em>"+ dice + "</em>";
+
+document.querySelector(".btn-roll").addEventListener("click", function () {
+    var diceDOM, dice;
+    diceDOM = document.querySelector(".dice");
+
+    // 1. randomize the number
+    dice = Math.floor(Math.random() * 6 + 1); //setting the dice to produce a random number
+
+    // 2. display the dice
+    diceDOM.src = "dice-" + dice + ".png"; // change the image based on the dice
+    diceDOM.style.display = "block";
+
+    // 3.  update the score  if it's not 1
+    if (dice !== 1) {
+        roundScore += dice;
+        document.getElementById("current-" + activePlayer).textContent = roundScore;
+    } else {
+        //switch the active player
+        nextPlayer();
+    }
+});
+
+document.querySelector(".btn-hold").addEventListener("click", function () {
+    // when the user clicks it add the current score to global score
+    scores[activePlayer] += roundScore;
+
+    // update the UI to reflect the same
+    document.querySelector("#score-" + activePlayer).textContent =
+        scores[activePlayer];
+
+    // check if the player won the game
+
+    if (scores[activePlayer] >= 20) {
+        document.querySelector('#name-' + activePlayer).textContent = 'WINNER!';
+        document.querySelector(".dice").style.display = 'none';
+        document.querySelector(".player-" + activePlayer + "-panel").classList.add('winner');
+        document.querySelector(".player-" + activePlayer + "-panel").classList.remove('active');
 
 
 
+    } else {
+        nextPlayer();
+
+    }
+
+
+});
+
+function nextPlayer() {
+    activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
+    document.querySelector(".player-0-panel").classList.toggle("active");
+    document.querySelector(".player-1-panel").classList.toggle("active");
+
+    roundScore = 0;
+
+    document.getElementById("current-0").textContent = 0;
+    document.getElementById("current-1").textContent = 0;
+}
