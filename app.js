@@ -9,7 +9,8 @@ After that, it's the next player's turn
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
-var scores, roundScore, activePlayer, GamePlaying;
+var scores, roundScore, activePlayer, GamePlaying ;
+var previousRoll = 1;
 
 init();
 
@@ -20,18 +21,31 @@ document.querySelector(".btn-roll").addEventListener("click", function () {
 
     // 1. randomize the number
     dice = Math.floor(Math.random() * 6 + 1); //setting the dice to produce a random number
-
     // 2. display the dice
     diceDOM.src = "dice-" + dice + ".png"; // change the image based on the dice
     diceDOM.style.display = "block";
 
     // 3.  update the score  if it's not 1
-    if (dice !== 1) {
+    if (dice !== 1 && (dice+previousRoll !== 12)) {
       roundScore += dice;
       document.getElementById(
         "current-" + activePlayer
       ).textContent = roundScore;
-    } else {
+      previousRoll = dice;
+    }
+
+    else if ((dice+previousRoll === 12)){
+      document.getElementById(
+          "current-" + activePlayer
+      ).textContent = 0;
+      scores[activePlayer] = 0;
+      document.querySelector("#score-" + activePlayer).textContent =
+          scores[activePlayer];
+
+      nextPlayer();
+    }
+
+    else {
       //switch the active player
       nextPlayer();
     }
@@ -48,8 +62,9 @@ document.querySelector(".btn-hold").addEventListener("click", function () {
       scores[activePlayer];
 
     // check if the player won the game
+    var ScoreLimit = document.getElementById('set-score').value;
+    if (scores[activePlayer] >= ScoreLimit) {
 
-    if (scores[activePlayer] >= 100) {
       GamePlaying = false;
       document.querySelector("#name-" + activePlayer).textContent = "WINNER!";
       document.querySelector(".dice").style.display = "none";
